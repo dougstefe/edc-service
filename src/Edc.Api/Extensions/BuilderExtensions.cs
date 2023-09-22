@@ -33,6 +33,7 @@ public static class BuilderExtension {
             .EnableSensitiveDataLogging()
             .EnableDetailedErrors());
     }
+
     public static void AddAuthentication(this WebApplicationBuilder builder) {
         builder.Services
             .AddAuthentication(x => {
@@ -51,5 +52,9 @@ public static class BuilderExtension {
             x.AddPolicy("User", policy => policy.RequireRole("User"));
             x.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
         });
+    }
+
+    public static void AddMediatR(this WebApplicationBuilder builder) {
+        builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblies(typeof(Config).Assembly));
     }
 }
