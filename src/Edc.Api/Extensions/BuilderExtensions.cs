@@ -47,5 +47,9 @@ public static class BuilderExtension {
                     ValidateAudience = false
                 };
             });
+        builder.Services.AddAuthorization(x => {
+            x.AddPolicy("User", policy => policy.RequireRole("User"));
+            x.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+        });
     }
 }
