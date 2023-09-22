@@ -21,4 +21,16 @@ public static class BuilderExtension {
 
     }
 
+    public static void AddDbContext(this WebApplicationBuilder builder) {
+        var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
+        builder.Services.AddDbContext<EdcDbContext>(x =>
+            x.UseMySql(
+                Config.Database.ConnectionString,
+                serverVersion,
+                b => b.MigrationsAssembly("Edc.Api")
+            )
+            .LogTo(Console.WriteLine, LogLevel.Information)
+            .EnableSensitiveDataLogging()
+            .EnableDetailedErrors());
+    }
 }
