@@ -33,4 +33,19 @@ public static class BuilderExtension {
             .EnableSensitiveDataLogging()
             .EnableDetailedErrors());
     }
+    public static void AddAuthentication(this WebApplicationBuilder builder) {
+        builder.Services
+            .AddAuthentication(x => {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x => {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Config.Secrets.TokenPrivateKey)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+    }
 }
