@@ -1,5 +1,6 @@
 using Edc.Core.Notifications;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Edc.Api.Extensions;
 
@@ -32,6 +33,21 @@ public static class AccountContextExtension {
         >();
         #endregion
 
+        #region Confirmate
+        builder.Services.AddTransient<
+            Core.AccountContext.UseCases.Confirmate.Interfaces.IGetByIdRepository,
+            Infra.AccountContext.UseCases.Confirmate.Repository
+        >();
+        builder.Services.AddTransient<
+            Core.AccountContext.UseCases.Confirmate.Interfaces.IUpdateRepository,
+            Infra.AccountContext.UseCases.Confirmate.Repository
+        >();
+        builder.Services.AddScoped<
+            Core.AccountContext.UseCases.Confirmate.Interfaces.IValidation,
+            Core.AccountContext.UseCases.Confirmate.Validation
+        >();
+        #endregion
+
         #region Login
         builder.Services.AddTransient<
             Core.AccountContext.UseCases.Login.Interfaces.IGetRepository,
@@ -48,7 +64,7 @@ public static class AccountContextExtension {
         app.MapPost(
             "api/v1/accounts",
             async (
-                Notification _notification,
+                Notification notification,
                 Core.AccountContext.UseCases.Create.Request request,
                 IRequestHandler<
                     Core.AccountContext.UseCases.Create.Request,
@@ -58,10 +74,32 @@ public static class AccountContextExtension {
                 var response = await handler.Handle(request, new CancellationToken());
 
                 if(!response.IsSuccess) {
-                    return _notification.GetResult();
+                    return notification.GetResult();
                 }
 
                 return Results.Json(data: response.Data, statusCode: StatusCodes.Status201Created);
+            }
+        );
+
+        app.MapPost(
+            "api/v1/accounts/{id}",
+            async (
+                Notification notification,
+                [FromRoute] Guid id,
+                Core.AccountContext.UseCases.Confirmate.Request request,
+                IRequestHandler<
+                    Core.AccountContext.UseCases.Confirmate.Request,
+                    Core.SharedContext.UseCases.Response<Core.AccountContext.UseCases.Confirmate.ResponseData>
+                > handler
+            ) => {
+                request.SetId(id);
+                var response = await handler.Handle(request, new CancellationToken());
+
+                if(!response.IsSuccess) {
+                    return notification.GetResult();
+                }
+
+                return Results.Json(data: response.Data, statusCode: StatusCodes.Status200OK);
             }
         );
 
@@ -82,7 +120,7 @@ public static class AccountContextExtension {
         app.MapPost(
             "api/v1/login",
             async (
-                Notification _notification,
+                Notification notification,
                 Core.AccountContext.UseCases.Login.Request request,
                 IRequestHandler<
                     Core.AccountContext.UseCases.Login.Request,
@@ -92,7 +130,7 @@ public static class AccountContextExtension {
                 var response = await handler.Handle(request, new CancellationToken());
 
                 if(!response.IsSuccess) {
-                    return _notification.GetResult();
+                    return notification.GetResult();
                 }
 
                 var accessToken = AccessTokenExtension.GenerateToken(response.Data);
