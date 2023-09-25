@@ -101,4 +101,29 @@ public class HandlerTests {
 
         Assert.NotEmpty(_notificationMock.Object.NotificationMessages.Where(x => x.Message.Equals("Any Exception")));
     }
+
+    [Fact]
+    public async Task ShouldCallUpdateRepositoryWithTheActiveAccount() {
+        
+        var emailFake = new Email("any@emai.com");
+        var accountFake = new Faker<Account>()
+            .CustomInstantiator(x =>
+                new Account(
+                    x.Person.FullName,
+                    emailFake,
+                    new Password("@ny_p@55w0rd"),
+                    RoleMock.RoleFaker.Generate()
+                )
+            ).Generate();
+
+        var code = accountFake.Email.VerificationCode.Code;
+        var request = new Request(accountFake.Id, code);
+        var cancellationToken = new CancellationToken();
+
+        _getByIdRepositoryMock.Setup(x => x.GetByIdAsync(request.Id, cancellationToken)).ReturnsAsync(accountFake);
+
+        await _sut.Handle(request, cancellationToken);
+
+        _updateRepositoryMock.Verify(x => x.UpdateAsync(It.Is<Account>(x => x.Id == request.Id && x.Email.VerificationCode.IsActive), cancellationToken), Times.Once);
+    }
 }
