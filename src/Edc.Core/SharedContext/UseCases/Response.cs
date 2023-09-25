@@ -1,7 +1,7 @@
 namespace Edc.Core.SharedContext.UseCases;
 
 public class Response<T> {
-    public Response(T data) {
+    public Response(T? data) {
         Data = data;
         IsSuccess = true;
     }
