@@ -75,4 +75,30 @@ public class HandlerTests {
 
         Assert.NotEmpty(_notificationMock.Object.NotificationMessages.Where(x => x.Message.Equals("This code is invalid.")));
     }
+
+    [Fact]
+    public async Task ShouldAddNotificationWhenUpdateRepositoryThrows() {
+        
+        var emailFake = new Email("any@emai.com");
+        var accountFake = new Faker<Account>()
+            .CustomInstantiator(x =>
+                new Account(
+                    x.Person.FullName,
+                    emailFake,
+                    new Password("@ny_p@55w0rd"),
+                    RoleMock.RoleFaker.Generate()
+                )
+            ).Generate();
+
+        var code = accountFake.Email.VerificationCode.Code;
+        var request = new Request(accountFake.Id, code);
+        var cancellationToken = new CancellationToken();
+
+        _getByIdRepositoryMock.Setup(x => x.GetByIdAsync(request.Id, cancellationToken)).ReturnsAsync(accountFake);
+        _updateRepositoryMock.Setup(x => x.UpdateAsync(accountFake, cancellationToken)).ThrowsAsync(new Exception("Any Exception"));
+
+        await _sut.Handle(request, cancellationToken);
+
+        Assert.NotEmpty(_notificationMock.Object.NotificationMessages.Where(x => x.Message.Equals("Any Exception")));
+    }
 }
