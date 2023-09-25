@@ -126,4 +126,36 @@ public class HandlerTests {
 
         _updateRepositoryMock.Verify(x => x.UpdateAsync(It.Is<Account>(x => x.Id == request.Id && x.Email.VerificationCode.IsActive), cancellationToken), Times.Once);
     }
+
+    [Fact]
+    public async Task ShouldReturnValidResponseWhenResponseIsSuccess() {
+        
+        var emailFake = new Email("any@emai.com");
+        var accountFake = new Faker<Account>()
+            .CustomInstantiator(x =>
+                new Account(
+                    x.Person.FullName,
+                    emailFake,
+                    new Password("@ny_p@55w0rd"),
+                    RoleMock.RoleFaker.Generate()
+                )
+            ).Generate();
+
+        var code = accountFake.Email.VerificationCode.Code;
+        var request = new Request(accountFake.Id, code);
+        var cancellationToken = new CancellationToken();
+
+        _getByIdRepositoryMock.Setup(x => x.GetByIdAsync(request.Id, cancellationToken)).ReturnsAsync(accountFake);
+
+        var response = await _sut.Handle(request, cancellationToken);
+
+        Assert.True(response.IsSuccess);
+        Assert.NotNull(response.Data);
+        Assert.Equal(accountFake.Id, response.Data.Id);
+        Assert.Equal(accountFake.Name, response.Data.Name);
+        Assert.Equal(accountFake.Email, response.Data.Email);
+        Assert.Equal(accountFake.Roles.Select(x => x.Name), response.Data.Roles);
+
+        Assert.Empty(_notificationMock.Object.NotificationMessages);
+    }
 }
