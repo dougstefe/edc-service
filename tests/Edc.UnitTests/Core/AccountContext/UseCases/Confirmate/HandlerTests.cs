@@ -59,4 +59,20 @@ public class HandlerTests {
 
         _getByIdRepositoryMock.Verify(x => x.GetByIdAsync(request.Id, cancellationToken), Times.Once);
     }
+
+    [Fact]
+    public async Task ShouldAddNotificationWhenVerifyCodeThrows() {
+
+        var id = Guid.NewGuid();
+        var code = "any_code";
+        var request = new Request(id, code);
+        var cancellationToken = new CancellationToken();
+        var accountFake = AccountMock.AccountFaker.Generate();
+        
+        _getByIdRepositoryMock.Setup(x => x.GetByIdAsync(request.Id, cancellationToken)).ReturnsAsync(accountFake);
+
+        await _sut.Handle(request, cancellationToken);
+
+        Assert.NotEmpty(_notificationMock.Object.NotificationMessages.Where(x => x.Message.Equals("This code is invalid.")));
+    }
 }
