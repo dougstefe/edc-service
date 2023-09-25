@@ -27,6 +27,11 @@ public class Handler : SharedContext.UseCases.Handler, IRequestHandler<Request, 
         }
         var account = await _getByIdRepository.GetByIdAsync(request.Id, cancellationToken);
 
+        if (account is null) {
+            _notification.AddNotificationMessage("Account not found.", NotificationMessageType.NotFoundNotification);
+            return new Response<ResponseData>();
+        }
+
         try {
             account.Email.VerificationCode.Verify(request.Code);
 

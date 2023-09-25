@@ -1,4 +1,4 @@
-
+using System.Text.Json.Serialization;
 using Edc.Core.SharedContext.UseCases;
 using MediatR;
 
@@ -10,7 +10,16 @@ public class Request : IRequest<Response<ResponseData>> {
         Id = id;
         Code = code;
     }
-
-    public Guid Id { get; }
+    
+    [JsonConstructor]
+    public Request(string code)
+    {
+        Code = code;
+    }
+    public Guid Id { get; private set; }
     public string Code { get; }
+
+    public void SetId(Guid id) {
+        Id = id;
+    }
 }

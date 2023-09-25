@@ -12,6 +12,7 @@ public class NotificationMessage {
 }
 
 public enum NotificationMessageType {
+    NotFoundNotification,
     DomainNotification,
     ServerErrorNotification
 }

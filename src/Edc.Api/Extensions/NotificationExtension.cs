@@ -7,6 +7,8 @@ public static class NotificationExtension {
         var statusCode =
             notification.NotificationMessages.Any(x => x.Type == NotificationMessageType.ServerErrorNotification) ?
             StatusCodes.Status500InternalServerError :
+            notification.NotificationMessages.Any(x => x.Type == NotificationMessageType.ServerErrorNotification) ?
+            StatusCodes.Status404NotFound :
             StatusCodes.Status400BadRequest;
 
         var messages = notification.NotificationMessages.Select(x => x.Message).Distinct();
