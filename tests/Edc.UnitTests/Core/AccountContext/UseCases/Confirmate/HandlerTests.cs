@@ -47,4 +47,16 @@ public class HandlerTests {
 
         Assert.NotEmpty(_notificationMock.Object.NotificationMessages.Where(x => x.Message.Equals($"{nameof(Request.Code)} is required.")));
     }
+
+    [Fact]
+    public async Task ShouldCallGetByIdRepository() {
+        var id = Guid.NewGuid();
+        var code = "any_code";
+        var request = new Request(id, code);
+        var cancellationToken = new CancellationToken();
+
+        await _sut.Handle(request, cancellationToken);
+
+        _getByIdRepositoryMock.Verify(x => x.GetByIdAsync(request.Id, cancellationToken), Times.Once);
+    }
 }
