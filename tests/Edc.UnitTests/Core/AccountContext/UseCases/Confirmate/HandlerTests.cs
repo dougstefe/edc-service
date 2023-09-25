@@ -36,4 +36,15 @@ public class HandlerTests {
 
         Assert.NotEmpty(_notificationMock.Object.NotificationMessages.Where(x => x.Message.Equals($"{nameof(Request.Id)} is required.")));
     }
+
+    [Fact]
+    public async Task ShouldAddNotificationWhenRequestCodeIsInvalid() {
+        var id = Guid.NewGuid();
+        var invalidCode = "";
+        var request = new Request(id, invalidCode);
+
+        await _sut.Handle(request, new CancellationToken());
+
+        Assert.NotEmpty(_notificationMock.Object.NotificationMessages.Where(x => x.Message.Equals($"{nameof(Request.Code)} is required.")));
+    }
 }
