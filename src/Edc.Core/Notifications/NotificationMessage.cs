@@ -12,7 +12,8 @@ public class NotificationMessage {
 }
 
 public enum NotificationMessageType {
-    NotFoundNotification,
-    DomainNotification,
-    ServerErrorNotification
+    DomainNotification = 400,
+    AuthorizationNotification = 401,
+    NotFoundNotification = 404,
+    ServerErrorNotification = 500
 }

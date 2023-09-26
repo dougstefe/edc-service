@@ -54,6 +54,15 @@ public static class BuilderExtension {
         });
     }
 
+    public static void AddDocumentation(this WebApplicationBuilder builder) {
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(options =>
+            {
+                options.CustomSchemaIds(type => type.FullName);
+            }
+        );
+    }
+
     public static void AddMediatR(this WebApplicationBuilder builder) {
         builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblies(typeof(Config).Assembly));
     }

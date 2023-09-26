@@ -10,6 +10,8 @@ builder.AddAccountContext();
 
 builder.AddMediatR();
 
+builder.AddDocumentation();
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
@@ -19,5 +21,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAccountRoutes();
+
+app.MapSwagger();
+app.UseSwaggerUI();
 
 app.Run();

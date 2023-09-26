@@ -79,7 +79,10 @@ public static class AccountContextExtension {
 
                 return Results.Json(data: response.Data, statusCode: StatusCodes.Status201Created);
             }
-        );
+        )
+        .Produces<IEnumerable<string>>(StatusCodes.Status400BadRequest)
+        .Produces<IEnumerable<string>>(StatusCodes.Status500InternalServerError)
+        .Produces<Core.AccountContext.UseCases.Create.ResponseData>(StatusCodes.Status201Created);
 
         app.MapPost(
             "api/v1/accounts/{id}",
@@ -101,7 +104,11 @@ public static class AccountContextExtension {
 
                 return Results.Json(data: response.Data, statusCode: StatusCodes.Status200OK);
             }
-        );
+        )
+        .Produces<IEnumerable<string>>(StatusCodes.Status404NotFound)
+        .Produces<IEnumerable<string>>(StatusCodes.Status400BadRequest)
+        .Produces<IEnumerable<string>>(StatusCodes.Status500InternalServerError)
+        .Produces<Core.AccountContext.UseCases.Confirmate.ResponseData>(StatusCodes.Status200OK);
 
         app.MapGet("api/v1/products",
             () => {
@@ -146,6 +153,10 @@ public static class AccountContextExtension {
                 );
 
             }
-        );
+        )
+        .Produces<IEnumerable<string>>(StatusCodes.Status401Unauthorized)
+        .Produces<IEnumerable<string>>(StatusCodes.Status400BadRequest)
+        .Produces<IEnumerable<string>>(StatusCodes.Status500InternalServerError)
+        .Produces<Core.AccountContext.UseCases.Login.ResponseData>(StatusCodes.Status200OK);
     }
 }
