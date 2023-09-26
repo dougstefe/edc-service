@@ -32,7 +32,7 @@ public class Handler : SharedContext.UseCases.Handler, IRequestHandler<Request, 
             var account = await _getRepository.GetAsync(email, cancellationToken);
 
             if (account is null || !account.Password.Compare(request.Password)) {
-                _notification.AddNotificationMessage($"Invalid {nameof(request.Email)} or {nameof(request.Password)}.");
+                _notification.AddNotificationMessage($"Invalid {nameof(request.Email)} or {nameof(request.Password)}.", NotificationMessageType.AuthorizationNotification);
                 return new Response<ResponseData>();
             }
 
