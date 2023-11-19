@@ -8,8 +8,8 @@ public class Role : Entity {
 
     public Role(string name, string description)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(name);
-        ArgumentNullException.ThrowIfNullOrEmpty(description);
+        ArgumentException.ThrowIfNullOrEmpty(name);
+        ArgumentException.ThrowIfNullOrEmpty(description);
         Name = name;
         Description = description;
     }
