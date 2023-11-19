@@ -2,8 +2,8 @@ name: Publish client package
 
 on:
   push:
-      branches:
-          - main
+    branches:
+      - main
   workflow_run:
     workflows: ['Unit tests']
     types:
@@ -29,5 +29,5 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release
       
-      - name: Create pack
-        run: dotnet pack ./src/Edc.Api.Client/ --configuration Release /p:Version=${VERSION} --no-build --output .
+      - name: Create package
+        run: dotnet pack ./src/Edc.Api.Client/ --configuration Release --no-build
