@@ -31,5 +31,4 @@ jobs:
         run: dotnet pack ./src/Edc.Api.Client/ --configuration Release --no-build
       
       - name: Publish package
-        run: dotnet nuget push "src/Edc.Api.Client/bin/Release/*.nupkg" -k ${{ secrets.NUGET_EDC_SERVICE_TOKEN }} -s https://api.nuget.org/v3/index.json
-        
+        run: dotnet nuget push "src/Edc.Api.Client/bin/Release/*.nupkg" -k ${{secrets.NUGET_EDC_SERVICE_TOKEN}} -s https://api.nuget.org/v3/index.json
