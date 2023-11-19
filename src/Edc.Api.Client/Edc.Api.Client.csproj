@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <PackageId>Edc.Api.Client</PackageId>
+    <PackageId>MEdc.Api.Client</PackageId>
     <Version>1.0.0</Version>
     <License>MIT</License>
     <Authors>Douglas Lessa</Authors>
@@ -15,7 +15,7 @@
     <PackageProjectUrl>https://github.com/dougstefe/edc-service</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>Edc;Api;Client</PackageTags>
-    <Title>Edc.Api.Client</Title>
+    <Title>MEdc.Api.Client</Title>
     <Summary>A client with methods to api communication.</Summary>
   </PropertyGroup>
 
